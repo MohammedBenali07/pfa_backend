@@ -1,0 +1,22 @@
+**Étapes principales pour implémenter le processus :
+Lors de l'inscription de l'utilisateur :
+
+Après qu'un utilisateur se soit inscrit (via un formulaire d'inscription), tu génères un token unique.
+
+Tu définis une date d'expiration pour ce token (par exemple, 24 heures après la création).
+
+Tu enregistres l'AccountConfirmation avec l'ID de l'utilisateur et le token.
+
+Envoi d'un email avec le lien de confirmation :
+
+Tu enverras un email contenant un lien vers un endpoint sécurisé du backend, par exemple : https://ton-app.com/confirm?token=<TOKEN>
+
+L'email sera envoyé à l'adresse fournie par l'utilisateur lors de son inscription.
+
+Confirmation du compte :
+
+L'utilisateur clique sur le lien et le système récupère le token.
+
+Le système vérifie que le token est valide (qu'il n'a pas expiré) et qu'il est associé à un utilisateur.
+
+Si tout est validé, le compte de l'utilisateur est activé (confirmed = true), et il peut se connecter.
