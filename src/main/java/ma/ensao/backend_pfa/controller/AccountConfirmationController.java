@@ -1,19 +1,20 @@
 package ma.ensao.backend_pfa.controller;
 
-import ma.ensao.backend_pfa.service.UserService;
 import ma.ensao.backend_pfa.util.EmailUtil;
-import ma.ensao.backend_pfa.dto.response.ResponseDTO;
+import ma.ensao.backend_pfa.dto.ResponseDTO;
 import ma.ensao.backend_pfa.entity.User;
+import ma.ensao.backend_pfa.service.user.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/account")
+/*@RestController
+@RequestMapping("/api/account")*/
 public class AccountConfirmationController {
 
-    @Autowired
+   /* @Autowired
     private UserService userService;
 
     @Autowired
@@ -21,7 +22,7 @@ public class AccountConfirmationController {
 
     @PostMapping("/send-confirmation")
     public ResponseEntity<ResponseDTO> sendConfirmationEmail(@RequestParam("email") String email) {
-        boolean emailSent = emailUtil.sendConfirmationEmail(email);
+        boolean emailSent = emailUtil.sendVerificationEmail(email, email, email);
 
         if (emailSent) {
             return ResponseEntity.status(HttpStatus.OK)
@@ -56,5 +57,5 @@ public class AccountConfirmationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ResponseDTO("Échec de l'envoi du code de confirmation"));
         }
-    }
+    }*/
 }

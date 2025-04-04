@@ -1,4 +1,4 @@
-package ma.ensao.backend_pfa.dto.response;
+package ma.ensao.backend_pfa.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

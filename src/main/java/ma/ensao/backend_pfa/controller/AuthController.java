@@ -3,9 +3,11 @@ package ma.ensao.backend_pfa.controller;
 import ma.ensao.backend_pfa.dto.AuthRequest;
 import ma.ensao.backend_pfa.dto.AuthResponse;
 import ma.ensao.backend_pfa.dto.RegisterRequest;
+import ma.ensao.backend_pfa.dto.VerifyUserDto;
 import ma.ensao.backend_pfa.entity.User;
 import ma.ensao.backend_pfa.security.JwtUtil;
-import ma.ensao.backend_pfa.service.UserService;
+import ma.ensao.backend_pfa.service.auth.AuthService;
+import ma.ensao.backend_pfa.service.user.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,52 +19,65 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*")
 public class AuthController {
 
-    @Autowired
     private AuthenticationManager authenticationManager;
 
-    @Autowired
     private JwtUtil jwtUtil;
 
-    @Autowired
     private UserService userService;
+    
+    private AuthService authService;
+    
+    private VerifyUserDto verifyUserDto;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
-        User newUser = userService.registerUser(registerRequest);
+        User newUser = authService.registerUser(registerRequest);
         return ResponseEntity.ok("User registered successfully: " + newUser.getEmail());
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody AuthRequest authRequest) {
         try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            authRequest.getEmail(),
-                            authRequest.getPassword()
-                    )
-            );
-
-            String token = jwtUtil.generateToken(authRequest.getEmail());
+            String token = authService.login(authRequest);
 
             return ResponseEntity.ok(new AuthResponse(token));
 
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(401).body("Invalid credentials");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body("User not found");
         }
     }
-
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") String tokenHeader) {
         String token = tokenHeader.replace("Bearer ", "");
-        String username = jwtUtil.extractUsername(token);
-        if (jwtUtil.validateToken(token, username)) {
+        String username = jwtUtil.extractUserName(token);
+        if (jwtUtil.validateToken(token)) {
             String newToken = jwtUtil.generateToken(username);
             return ResponseEntity.ok(new AuthResponse(newToken));
         } else {
             return ResponseEntity.status(401).body("Invalid or expired token");
+        }
+    }
+    
+    @PostMapping("/verify")
+    public ResponseEntity<?> verifyUser(@RequestBody VerifyUserDto verifyUserDto) {
+        try {
+            authService.verifyUser(verifyUserDto);
+            return ResponseEntity.ok("Account verified successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PostMapping("/resend")
+    public ResponseEntity<?> resendVerificationCode(@RequestParam String email) {
+        try {
+            authService.resendVerificationCode(email);
+            return ResponseEntity.ok("Verification code sent");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

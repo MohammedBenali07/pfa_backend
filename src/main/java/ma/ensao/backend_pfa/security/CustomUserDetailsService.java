@@ -39,14 +39,5 @@ public class CustomUserDetailsService implements org.springframework.security.co
                 .build();
     }
 
-    public UserDetails registerNewUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-
-        return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
-                .password(user.getPassword())
-                .roles(user.getRole().getName().name())
-                .disabled(!user.isEnabled())
-                .build();
-    }
+   
 }

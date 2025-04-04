@@ -27,13 +27,20 @@ public class AccountConfirmation {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String token; 
+    private String token;
 
     @Column(name = "expiry_date", nullable = false)
-    private LocalDateTime expiryDate; 
+    private LocalDateTime expiryDate;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user; 
+    private User user;
 
-    private boolean confirmed = false; 
+    private boolean confirmed = false;
+
+    @Column(name = "verification_code")
+    private String verificationCode;
+
+    @Column(name = "verification_code_expires_at")
+    private LocalDateTime verificationCodeExpiresAt;
 }

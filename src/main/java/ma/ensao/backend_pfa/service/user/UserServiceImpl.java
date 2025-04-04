@@ -1,59 +1,80 @@
 package ma.ensao.backend_pfa.service.user;
 
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import ma.ensao.backend_pfa.entity.AccountConfirmation;
-import ma.ensao.backend_pfa.entity.Role;
+
 import ma.ensao.backend_pfa.entity.User;
-import ma.ensao.backend_pfa.enums.RoleType;
-import ma.ensao.backend_pfa.repository.AccountConfirmationRepository;
-import ma.ensao.backend_pfa.repository.RoleRepository;
 import ma.ensao.backend_pfa.repository.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final AccountConfirmationRepository confirmationRepository;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
-    @Transactional
-    public String registerUser(User user) {
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new RuntimeException("Un utilisateur avec cet email existe déjà.");
-        }
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        Role defaultRole = roleRepository.findByName(RoleType.STUDENT)
-                .orElseThrow(() -> new RuntimeException("Le rôle par défaut est introuvable."));
-        user.setRole(defaultRole);
-
-        User savedUser = userRepository.save(user);
-
-        String token = UUID.randomUUID().toString();
-        AccountConfirmation confirmation = new AccountConfirmation(
-                null,
-                token,
-                LocalDateTime.now().plusMinutes(30),
-                savedUser,
-                false
-        );
-        confirmationRepository.save(confirmation);
-
-        return token;
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     @Override
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+    @Override
+    public User saveUser(User user) {
+        return userRepository.save(user); 
+    }
+
+    @Override
+    public User updateUser(Long id, User updatedUser) {
+        if (!userRepository.existsById(id)) {
+            throw new RuntimeException("User not found");
+        }
+        
+        updatedUser.setId(id);  // Assurez-vous que l'ID de l'utilisateur est correctement assigné
+
+        return userRepository.save(updatedUser);  // Sauvegarde les modifications
+    }
+   
+
+    @Override
+    public void deleteById(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new RuntimeException("User not found");
+        }
+        userRepository.deleteById(id);
+    }
+
+	
+}
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    /* @Override
     @Transactional
     public void confirmUser(String token) {
         AccountConfirmation confirmation = confirmationRepository.findByToken(token)
@@ -69,15 +90,6 @@ public class UserServiceImpl implements UserService {
 
         confirmation.setConfirmed(true);
         confirmationRepository.save(confirmation);
-    }
+    }*/
 
-    @Override
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
 
-    @Override
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
-    }
-}

@@ -1,9 +1,9 @@
 package ma.ensao.backend_pfa.controller;
 
-package ma.ensao.backend_pfa.controller;
 
 import ma.ensao.backend_pfa.entity.User;
-import ma.ensao.backend_pfa.service.UserService;
+import ma.ensao.backend_pfa.service.user.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,14 +42,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+        userService.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/{id}/role")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> updateUserRole(@PathVariable Long id, @RequestParam String roleName) {
-        User user = userService.updateUserRole(id, roleName);
-        return ResponseEntity.ok(user);
     }
 }
