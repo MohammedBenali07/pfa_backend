@@ -29,9 +29,17 @@ public class AuthController {
     
     private AuthService authService;
     
-    private VerifyUserDto verifyUserDto;
+    
+    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserService userService,
+			AuthService authService) {
+		super();
+		this.authenticationManager = authenticationManager;
+		this.jwtUtil = jwtUtil;
+		this.userService = userService;
+		this.authService = authService;
+	}
 
-    @PostMapping("/register")
+	@PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
         User newUser = authService.registerUser(registerRequest);
         return ResponseEntity.ok("User registered successfully: " + newUser.getEmail());
