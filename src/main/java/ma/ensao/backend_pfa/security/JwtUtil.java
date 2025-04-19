@@ -4,6 +4,10 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import ma.ensao.backend_pfa.config.JwtProperties;
+import ma.ensao.backend_pfa.entity.Role;
+import ma.ensao.backend_pfa.repository.RoleRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -21,6 +25,8 @@ import java.security.NoSuchAlgorithmException;
 public class JwtUtil {
 
     private String secretkey = "";
+    @Autowired
+    private RoleRepository roeRepository;
 
     public JwtUtil() {
         try {
@@ -32,8 +38,10 @@ public class JwtUtil {
         }
     }
 
-    public String generateToken(String username) {
+    public String generateToken(String username,Role role) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role.getId());
+        System.out.println(role);
         return Jwts.builder()
                 .setClaims(claims)  
                 .setSubject(username)
@@ -41,6 +49,10 @@ public class JwtUtil {
                 .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 30 * 1000))  
                 .signWith(getKey())  
                 .compact();
+    }
+    public Role extractRole(String token) {
+        final Claims claims = extractAllClaims(token);
+        return claims.get("role", Role.class);
     }
 
     private SecretKey getKey() {

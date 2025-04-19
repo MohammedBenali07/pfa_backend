@@ -17,7 +17,7 @@ public class EmailUtil {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-        helper.setFrom("gi.ensao@ump.ac.ma"); //bdlo gmail gmail 
+        helper.setFrom("mohammed.benali23@ump.ac.ma"); 
         helper.setTo(to);
         helper.setSubject(subject);
         helper.setText(text, true);

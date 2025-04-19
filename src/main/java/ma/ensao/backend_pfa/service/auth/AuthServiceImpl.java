@@ -8,6 +8,7 @@ import ma.ensao.backend_pfa.entity.AccountConfirmation;
 import ma.ensao.backend_pfa.entity.Role;
 import ma.ensao.backend_pfa.entity.User;
 import ma.ensao.backend_pfa.repository.AccountConfirmationRepository;
+import ma.ensao.backend_pfa.repository.RoleRepository;
 import ma.ensao.backend_pfa.repository.UserRepository;
 import ma.ensao.backend_pfa.security.JwtUtil;
 import ma.ensao.backend_pfa.service.user.UserService;
@@ -43,15 +44,17 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String login(AuthRequest authRequest) {
+    	System.out.println("1");
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
         );
-
+        System.out.println("2");
         User user = userService.findByEmail(authRequest.getEmail())
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
-
-        return jwtUtil.generateToken(user.getEmail());
+        System.out.println("3");
+        return jwtUtil.generateToken(user.getEmail(),user.getRole());
     }
+   
 
     @Override
     @Transactional
@@ -101,8 +104,11 @@ public class AuthServiceImpl implements AuthService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
         );
+        System.out.println("avant");
         if (authentication.isAuthenticated()) {
-            return jwtUtil.generateToken(authRequest.getEmail());
+        	Role role = userRepository.findRoleByEmail(authRequest.getEmail());
+        	System.out.println("apres");
+            return jwtUtil.generateToken(authRequest.getEmail(),role);
         } else {
             throw new RuntimeException("Échec d'authentification.");
         }
