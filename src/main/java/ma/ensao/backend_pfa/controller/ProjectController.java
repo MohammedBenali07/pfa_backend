@@ -37,6 +37,9 @@ public class ProjectController {
     public ResponseEntity<List<Project>> getProjets() {
         User user = userService.getConnectedUser();
         List<Project> projets = projectRepository.findByUser(user);
+       // System.out.println("Projets de l'utilisateur connecté :");
+        //projets.forEach(System.out::println);
+
         return ResponseEntity.ok(projets);
     }
 }

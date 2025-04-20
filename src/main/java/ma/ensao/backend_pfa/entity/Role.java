@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,9 +25,9 @@ public class Role {
     @Column(unique = true, nullable = false)
     private RoleType name;
 
+
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    //@JsonBackReference
-    //@JsonIgnore
-    @JsonBackReference
-    private List<User> users = new ArrayList<>(); 
+    @JsonManagedReference
+    @JsonIgnore
+    private List<User> users = new ArrayList<>();
 }
