@@ -22,7 +22,7 @@ public class BackendPfaApplication {
         SpringApplication.run(BackendPfaApplication.class, args);
     }
 
-    @Bean
+   /* @Bean
     CommandLineRunner start(UserService userService, RoleRepository roleRepository, PasswordEncoder passwordEncoder,ProjectRepository projectRepository) {
         return args -> {
             // Créer des rôles
@@ -77,6 +77,8 @@ public class BackendPfaApplication {
 
         };
     }
+
+    */
 
 
 
