@@ -1,5 +1,7 @@
 package ma.ensao.backend_pfa;
 
+import ma.ensao.backend_pfa.entity.Project;
+import ma.ensao.backend_pfa.repository.ProjectRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,6 +13,7 @@ import ma.ensao.backend_pfa.entity.User;
 import ma.ensao.backend_pfa.enums.RoleType;
 import ma.ensao.backend_pfa.repository.RoleRepository;
 import ma.ensao.backend_pfa.service.user.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 public class BackendPfaApplication {
@@ -20,7 +23,7 @@ public class BackendPfaApplication {
     }
 
     @Bean
-    CommandLineRunner start(UserService userService,RoleRepository roleRepository) {
+    CommandLineRunner start(UserService userService, RoleRepository roleRepository, PasswordEncoder passwordEncoder,ProjectRepository projectRepository) {
         return args -> {
             // Créer des rôles
             Role adminRole = new Role();
@@ -38,7 +41,7 @@ public class BackendPfaApplication {
             adminUser.setFirstName("Admin");
             adminUser.setLastName("Admin");
             adminUser.setEmail("admin@example.com");
-            adminUser.setPassword("admin123");
+            adminUser.setPassword(passwordEncoder.encode("admin123"));
             adminUser.setRole(adminRole);
             adminUser.setEnabled(true); // Utilisateur activé
             userService.saveUser(adminUser);
@@ -51,6 +54,26 @@ public class BackendPfaApplication {
             regularUser.setRole(userRole);
             regularUser.setEnabled(true); // Utilisateur activé
             userService.saveUser(regularUser);
+
+
+            //creer un nouveau projet
+            User user_connected = userService.getConnectedUser();
+            if (user_connected != null) {
+                Project project = new Project();
+                project.setTitre("premier projet");
+                project.setDescription("notre premier projet");
+                project.setCompetences("spring boot , jwt security , react, typescript");
+                project.setStatut("vierge");
+                project.setUser(user_connected);
+                projectRepository.save(project);
+            } else {
+                System.out.println("Aucun utilisateur connecté trouvé au démarrage.");
+            }
+
         };
     }
+
+
+
+
 }

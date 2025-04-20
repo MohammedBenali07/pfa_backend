@@ -4,6 +4,9 @@ package ma.ensao.backend_pfa.service.user;
 import ma.ensao.backend_pfa.entity.User;
 import ma.ensao.backend_pfa.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -59,7 +62,34 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
-	
+   /* @Override
+    public User getConnectedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName(); // Le JWT contient l'email dans le "subject"
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
+    }
+
+
+    */
+   @Override
+   public User getConnectedUser() {
+       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+       if (authentication == null || !authentication.isAuthenticated()
+               || authentication.getPrincipal().equals("anonymousUser")) {
+           // Aucun utilisateur connecté
+           return null;
+       }
+
+       String email = authentication.getName();
+       System.out.println(email);
+       return userRepository.findByEmail(email)
+               .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
+
+   }
+
+
 }
 
     
