@@ -1,5 +1,7 @@
 package ma.ensao.backend_pfa.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,10 +46,13 @@ public class User {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
+    //@JsonManagedReference
+    @JsonManagedReference
     @ToString.Exclude
     private Role role;
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<Project> projets = new ArrayList<>();
 }

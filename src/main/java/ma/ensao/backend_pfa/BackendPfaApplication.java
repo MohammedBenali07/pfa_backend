@@ -29,6 +29,11 @@ public class BackendPfaApplication {
             Role adminRole = new Role();
             adminRole.setName(RoleType.ADMIN);
 
+            Role supervisorRole = new Role();
+            supervisorRole.setName(RoleType.SUPERVISOR);
+            Role studentRole = new Role();
+            supervisorRole.setName(RoleType.STUDENT);
+
             Role userRole = new Role();
             userRole.setName(RoleType.USER);
 

@@ -4,6 +4,7 @@ import ma.ensao.backend_pfa.dto.AuthRequest;
 import ma.ensao.backend_pfa.dto.AuthResponse;
 import ma.ensao.backend_pfa.dto.RegisterRequest;
 import ma.ensao.backend_pfa.dto.VerifyUserDto;
+import ma.ensao.backend_pfa.entity.Role;
 import ma.ensao.backend_pfa.entity.User;
 import ma.ensao.backend_pfa.security.JwtUtil;
 import ma.ensao.backend_pfa.service.auth.AuthService;
@@ -48,7 +49,9 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody AuthRequest authRequest) {
         try {
+        	System.out.println("heloooooooooooooooooo");
             String token = authService.login(authRequest);
+            System.out.println(token);
 
             return ResponseEntity.ok(new AuthResponse(token));
 
@@ -62,8 +65,9 @@ public class AuthController {
     public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") String tokenHeader) {
         String token = tokenHeader.replace("Bearer ", "");
         String username = jwtUtil.extractUserName(token);
+        Role role =jwtUtil.extractRole(token);
         if (jwtUtil.validateToken(token)) {
-            String newToken = jwtUtil.generateToken(username);
+            String newToken = jwtUtil.generateToken(username,role);
             return ResponseEntity.ok(new AuthResponse(newToken));
         } else {
             return ResponseEntity.status(401).body("Invalid or expired token");

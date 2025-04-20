@@ -1,11 +1,14 @@
 package ma.ensao.backend_pfa.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.context.annotation.Lazy;
+
 import java.time.LocalDate;
 
 
@@ -58,7 +61,8 @@ public class Project {
     @Column(name= "enabled_project",columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean enabledProject = false;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonManagedReference
     @JoinColumn(name = "user_id")
     private User user;
 
