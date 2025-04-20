@@ -26,7 +26,7 @@ public class BackendPfaApplication {
     CommandLineRunner start(UserService userService, RoleRepository roleRepository, PasswordEncoder passwordEncoder,ProjectRepository projectRepository) {
         return args -> {
             // Créer des rôles
-            Role adminRole = new Role();
+         /*   Role adminRole = new Role();
             adminRole.setName(RoleType.ADMIN);
 
             Role supervisorRole = new Role();
@@ -76,6 +76,8 @@ public class BackendPfaApplication {
             }
 
         };
+
+
     }
 
     */
