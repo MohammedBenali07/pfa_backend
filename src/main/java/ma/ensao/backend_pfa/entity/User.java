@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.apache.catalina.Group;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,4 +57,13 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Project> projets = new ArrayList<>();
+
+    private boolean isRepresentant = false; //check if the student is a representant or not
+
+    public Group getGroupe() {
+        
+    }
+
+    public void setGroupe(Groupe groupe) {
+    }
 }

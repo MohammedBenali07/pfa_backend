@@ -68,4 +68,8 @@ public class Project {
     }
 
 
+    @OneToOne(mappedBy = "project")
+    private Groupe groupe;
+
+
 }
