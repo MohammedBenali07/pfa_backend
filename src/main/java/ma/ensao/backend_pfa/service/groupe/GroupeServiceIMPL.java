@@ -10,9 +10,6 @@ import ma.ensao.backend_pfa.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
-private final EmailService emailService;
 import java.util.List;
 @Service
 public class GroupeServiceIMPL implements GroupeService{
@@ -21,10 +18,9 @@ public class GroupeServiceIMPL implements GroupeService{
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
 
-    public GroupeServiceIMPL(UserRepository userRepository, ProjectRepository projectRepository, EmailService emailService) {
+    public GroupeServiceIMPL(UserRepository userRepository, ProjectRepository projectRepository) {
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
-        this.emailService = emailService;
     }
 
     @Override
@@ -61,19 +57,6 @@ public class GroupeServiceIMPL implements GroupeService{
         return List.of();
     }
 
-    @Override
-    @Transactional
-    public void inviteStudentsToGroupe(Groupe groupe, List<String> emails) {
-        // Ensure we're working with a managed entity
-        Groupe managedGroupe = grouperepository.findById(groupe.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Group not found"));
-
-        emails.forEach(email -> {
-            userRepository.findByEmail(email).ifPresentOrElse(
-                    user -> processExistingUser(managedGroupe, user),
-                    () -> processNewInvitation(email, managedGroupe)
-            );
-        });
 
     @Override
     public void invitestudentsToGroupe(Groupe groupe, List<String> email) {
@@ -85,43 +68,4 @@ public class GroupeServiceIMPL implements GroupeService{
 
     }
 
-}
-
-
-    private void processExistingUser(Groupe groupe, User user) {
-        // Check if user is already in the group
-        if (user.getGroupe() != null && user.getGroupe().equals(groupe)) {
-            return;
-        }
-
-        // Remove from previous group if any
-        if (user.getGroupe() != null) {
-            user.getGroupe().getUsers().remove(user);
-        }
-
-        // Add to new group
-        user.setGroupe(groupe);
-        groupe.getUsers().add(user); // Maintain bidirectional relationship
-        userRepository.save(user);
-
-        // Send invitation notification
-        emailService.sendExistingUserInvitation(user.getEmail(), groupe);
-    }
-
-    private void processNewInvitation(String email, Groupe groupe) {
-        // Create and send invitation to non-registered user
-        String invitationToken = generateInvitationToken();
-        saveInvitationRecord(email, groupe, invitationToken);
-        emailService.sendNewUserInvitation(email, groupe, invitationToken);
-    }
-
-    private String generateInvitationToken() {
-        // Implement token generation logic
-        return UUID.randomUUID().toString();
-    }
-
-    private void saveInvitationRecord(String email, Groupe groupe, String token) {
-        // Save to database (create Invitation entity if needed)
-        invitationRepository.save(new Invitation(email, groupe, token));
-    }
 }
