@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.hibernate.internal.util.collections.ArrayHelper.forEach;
+
 @RestController
 @RequestMapping("/api/Encadrant/project")
 public class ProjectController {
