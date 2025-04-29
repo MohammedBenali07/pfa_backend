@@ -60,4 +60,7 @@ public class User {
 
     private boolean isRepresentant = false; //check if the student is a representant or not
 
+    public void setGroupe(Object o) {
+
+    }
 }

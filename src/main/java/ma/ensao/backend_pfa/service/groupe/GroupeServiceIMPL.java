@@ -62,10 +62,25 @@ public class GroupeServiceIMPL implements GroupeService{
     public void invitestudentsToGroupe(Groupe groupe, List<String> email) {
 
     }
-
     @Override
+    @Transactional
     public void removeStudentFromGroupe(Groupe groupe, String email) {
+        User userToRemove = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
 
+        if (groupe.getUsers().contains(userToRemove)) {
+            // Check if the user being removed is the representant
+            if (userToRemove.equals(groupe.getRepresentant())) {
+                // If the representant is removed, delete the entire group
+                grouperepository.delete(groupe);
+            } else {
+                // If it's not the representant, simply remove the user from the group
+                groupe.getUsers().remove(userToRemove);
+                userToRemove.setGroupe(null); // Important: Disassociate the user from the group
+                userRepository.save(userToRemove);
+                grouperepository.save(groupe);
+            }
+        }
     }
 
 }
