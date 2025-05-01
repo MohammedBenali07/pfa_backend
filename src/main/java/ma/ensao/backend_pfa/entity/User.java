@@ -10,7 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.apache.catalina.Group;
-
+import ma.ensao.backend_pfa.entity.Groupe;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +44,11 @@ public class User {
 
     @Column(name = "image_url")
     private String imageUrl;
-    
+
+    @ManyToOne
+    @JoinColumn(name = "groupe_id")
+    private Groupe groupe;
+
     private boolean enabled = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -60,7 +64,7 @@ public class User {
 
     private boolean isRepresentant = false; //check if the student is a representant or not
 
-    public void setGroupe(Object o) {
-
+    public void setGroupe(Groupe groupe) {
+        this.groupe = groupe;
     }
 }

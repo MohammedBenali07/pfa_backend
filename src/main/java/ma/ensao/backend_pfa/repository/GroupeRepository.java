@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GroupeRepository extends JpaRepository<Groupe, Long> {
-    Optional<Groupe> findByRepresentant(String representant); // Corrected method name to follow convention
-    boolean existsByRepresentant(String representant);     // Corrected method name to follow convention
+   // Optional<Groupe> findByRepresentant(String representant); // Corrected method name to follow convention
+    //boolean existsByRepresentant(String representant);     // Corrected method name to follow convention
 
     List<Groupe> findByProject(Project project);
 }

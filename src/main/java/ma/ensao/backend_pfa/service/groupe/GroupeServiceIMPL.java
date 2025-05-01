@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 @Service
 public class GroupeServiceIMPL implements GroupeService{
+    public static int nbrdegrp;
     @Autowired
     private GroupeRepository grouperepository;
     private final UserRepository userRepository;
@@ -31,6 +32,7 @@ public class GroupeServiceIMPL implements GroupeService{
     @Override
     public void saveGroupe(Groupe groupe) {
         grouperepository.save(groupe);
+        nbrdegrp++;
     }
 
     @Override
@@ -60,7 +62,14 @@ public class GroupeServiceIMPL implements GroupeService{
 
     @Override
     public void invitestudentsToGroupe(Groupe groupe, List<String> email) {
-
+        email.forEach(e -> {
+            User user = userRepository.findByEmail(e)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + e));
+            groupe.getUsers().add(user);
+            user.setGroupe(groupe);
+            userRepository.save(user);
+        });
+        grouperepository.save(groupe);
     }
     @Override
     @Transactional
@@ -82,5 +91,4 @@ public class GroupeServiceIMPL implements GroupeService{
             }
         }
     }
-
 }
