@@ -62,7 +62,7 @@ public class User {
     @JsonIgnore
     private List<Project> projets = new ArrayList<>();
 
-    private boolean isRepresentant = false; //check if the student is a representant or not
+    private boolean isRepresentant = true; //check if the student is a representant or not
 
     public void setGroupe(Groupe groupe) {
         this.groupe = groupe;
