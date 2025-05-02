@@ -15,6 +15,8 @@ import java.util.List;
 
 public class Groupe  {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
     private String nom;
     private String subject;
@@ -30,8 +32,19 @@ public class Groupe  {
             orphanRemoval = false // Optional: delete users when removed from list
     )
     private List<User> users = new ArrayList<>();
+    public void addUser(User user) {
+        if (!this.users.contains(user)) {
+            this.users.add(user);
+            user.setGroupe(this);
+        }
+    }
 
-
+    public void removeUser(User user) {
+        if (this.users.contains(user)) {
+            this.users.remove(user);
+            user.setGroupe(null);
+        }
+    }
     @OneToOne
     @JoinColumn(name = "representant_id")
     private User representant;// The representative of this group

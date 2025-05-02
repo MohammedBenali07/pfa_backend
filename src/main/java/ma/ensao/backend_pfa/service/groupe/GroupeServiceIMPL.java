@@ -17,11 +17,13 @@ public class GroupeServiceIMPL implements GroupeService{
     @Autowired
     private GroupeRepository grouperepository;
     private final UserRepository userRepository;
-    private final ProjectRepository projectRepository;
+    private ProjectRepository projectRepository;
 
     public GroupeServiceIMPL(UserRepository userRepository, ProjectRepository projectRepository) {
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
+        this.projectRepository = projectRepository;
+
     }
 
     @Override
@@ -67,8 +69,14 @@ public class GroupeServiceIMPL implements GroupeService{
                     .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + e));
             groupe.getUsers().add(user);
             user.setGroupe(groupe);
+            if (!groupe.getUsers().contains(user)) {
+                groupe.getUsers().add(user);
+            }
+
+            // Save user explicitly
             userRepository.save(user);
         });
+
         grouperepository.save(groupe);
     }
     @Override

@@ -54,7 +54,7 @@ public class GroupeController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/create-groupe")
     public ResponseEntity<GroupeDTO> createGroupe(@RequestBody GroupeDTO groupeDTO) {
         Groupe groupe = new Groupe();
         groupe.setNom(groupeDTO.getNom());
@@ -67,7 +67,13 @@ public class GroupeController {
         if (groupeDTO.getRepresentantId() != null) {
             User representant = userRepository.findById(groupeDTO.getRepresentantId())
                     .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + groupeDTO.getRepresentantId()));
+
             groupe.setRepresentant(representant);
+
+            // Ensure representative is added to members
+            if (!groupe.getUsers().contains(representant)) {
+                groupe.getUsers().add(representant);
+            }
         }
         groupeService.saveGroupe(groupe);
         groupeDTO.setId(groupe.getId());
