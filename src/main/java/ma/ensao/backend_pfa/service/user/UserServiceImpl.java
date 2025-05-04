@@ -1,6 +1,8 @@
 package ma.ensao.backend_pfa.service.user;
 
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import ma.ensao.backend_pfa.entity.User;
 import ma.ensao.backend_pfa.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,12 +84,14 @@ public class UserServiceImpl implements UserService {
            return null;
        }
 
+
        String email = authentication.getName();
        System.out.println(email);
        return userRepository.findByEmail(email)
                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
 
    }
+
 
 
 }

@@ -5,6 +5,7 @@ import ma.ensao.backend_pfa.entity.User;
 import ma.ensao.backend_pfa.service.user.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -44,5 +45,14 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/current")
+    public ResponseEntity<User> getCurrentUser() {
+        User user = userService.getConnectedUser();
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        System.out.println("user coonected "+user.getLastName()+" ' "+user.getFirstName());
+        return ResponseEntity.ok(user);
     }
 }

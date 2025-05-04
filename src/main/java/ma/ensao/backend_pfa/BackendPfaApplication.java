@@ -53,11 +53,11 @@ public class BackendPfaApplication {
             userService.saveUser(adminUser);
 
             User regularUser = new User();
-            regularUser.setFirstName("John");
-            regularUser.setLastName("Doe");
-            regularUser.setEmail("john.doe@example.com");
-            regularUser.setPassword("user123");
-            regularUser.setRole(userRole);
+            regularUser.setFirstName("user");
+            regularUser.setLastName("user");
+            regularUser.setEmail("user@example.com");
+            regularUser.setPassword(passwordEncoder.encode("user123"));
+            regularUser.setRole(adminRole);
             regularUser.setEnabled(true); // Utilisateur activé
             userService.saveUser(regularUser);
 
