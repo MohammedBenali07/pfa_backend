@@ -12,7 +12,9 @@ import java.util.List;
 @Configuration
 public class CorsConfig {
 
-	private final String corsAllowedOrigins = "http://localhost:8080,http://localhost:5173";
+    // Added React default port (3000) to allowed origins
+    private final String corsAllowedOrigins =
+            "http://localhost:8080,http://localhost:5173,http://localhost:3000";
 
     @Bean
     public CorsFilter corsFilter() {
